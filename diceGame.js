@@ -64,12 +64,37 @@ function determineComputerArmorType() {
 	return armorType;
 }
 
-function determineBaseDamage() {
-	// Determines base damage or healing value
+function determineBaseDamage(move) {
+	let roll = rollTheDice(16)
+	if (move === "attack"){
+		return Math.sign(-1) * roll;
+	} else{
+		return Math.ceil(roll / 2);
+	}
 }
 
-function determineTotalDamage(baseDamage, hit, armorType, element, resistance, criticalStrike) {
-	// body...
+function determineTotalDamage(baseDamage, hit, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier) {
+	if(hit){
+		let totalDamage;
+	} else{
+		return 0;
+	}
+}
+
+function defenseMultiplier(armorType, element) {
+	if(armorType === "leather") {
+		if(element === "water" || element === "electric") {
+			return .6;
+		} else {
+			return .8;
+		}
+	} else if (armorType === "plate") {
+		if(element === "fire" || element === "physical") {
+			return .6;
+		} else {
+			return .8;
+		}
+	}
 }
 
 function determineResistancePenetration() {
@@ -98,7 +123,7 @@ function elementDamage() {
 	// Determines element damage bonus
 }
 
-function criticalStrikeMultiplyer(armorType, element) { 
+function criticalStrikeMultiplier(armorType, element) { 
 	let critChance = rollTheDice(5);
 	if(critChance === 5){
 		if (armorType === "leather" && (element === "water" || element === "electric")){
@@ -148,7 +173,6 @@ function computerMove(computerHealth) {
 }
 
 function playerMove() {
-	// Determines whether the player wishes to heal or attack
 	let invalidInput = true;
 	let move;
 	while(invalidInput){
@@ -202,4 +226,4 @@ function rollTheDice(sidesOfDice) {
 	return Math.floor(Math.random() * sidesOfDice) + 1;
 }
 
-runTheGame();
+runTheGame();       
