@@ -4,7 +4,7 @@ function runTheGame() {
 		let turn = 0;
 		let playerHealth = 100;
 		let computerHealth = 100;
-		let playerAmrmor = getPlayerArmorType();
+		let playerArmor = getPlayerArmorType();
 		let computerArmor = getComputerArmorType();
 
 		while(playerHealth > 0 && computerHealth > 0){
@@ -15,11 +15,21 @@ function runTheGame() {
 	} while(playAgain());
 }
 
-function playerTurn() {
+function playerTurn(computerArmor) {
 	// contains all steps of the players turn
+	let playerMove = getPlayerMove();
+	alert("You chose to " + playerMove + " .");
+	let hitChance = getHitChance(playerMove);
+	let baseDamage = getBaseDamage();
+	alert("Your base damage rolled to " + baseDamage + ".");
+	let elementType = getElementType();
+	let elementDamage = getElementDamage();
+	alert("Your element rolled to " + ElementType + " and it does " + elementDamage + " bonus damage.");
+	let defenseMultiplier = getDefenseMultiplier();
+	let resistancePenetration = getResistancePenetration();
 }
 
-function compterTurn() {
+function compterTurn(playerArmor) {
 	// contains all steps of the computers turn
 }
 
@@ -27,8 +37,10 @@ function getHitChance(ability) {
 	if (ability === "attack"){
 		let roll = rollTheDice(4);
 		if (roll === 1) {
+			console.log("Your hit chance rolled a " + roll + ". Your attack misses.");
 			return false;
 		} else{
+			console.log("Your hit chance rolled a " + roll + ". Your attack connects.");
 			return true;
 		}
 	} else {
@@ -109,7 +121,7 @@ function getResistancePenetration() {
 	}
 }
 
-function getElement() {
+function getElementType() {
 	roll = rollTheDice(4);
 	if(roll === 1){
 		return "water";
