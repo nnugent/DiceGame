@@ -4,8 +4,8 @@ function runTheGame() {
 		let turn = 0;
 		let playerHealth = 100;
 		let computerHealth = 100;
-		let playerAmrmor = determinePlayerArmorType();
-		let computerArmor = determineComputerArmorType();
+		let playerAmrmor = getPlayerArmorType();
+		let computerArmor = getComputerArmorType();
 
 		while(playerHealth > 0 && computerHealth > 0){
 			turn++;
@@ -23,7 +23,7 @@ function compterTurn() {
 	// contains all steps of the computers turn
 }
 
-function determineHit(ability) {
+function getHitChance(ability) {
 	if (ability === "attack"){
 		let roll = rollTheDice(4);
 		if (roll === 1) {
@@ -36,7 +36,7 @@ function determineHit(ability) {
 	}
 }
 
-function determinePlayerArmorType() {
+function getPlayerArmorType() {
 	let invalidInput = true;
 	let armorType;
 	while(invalidInput){
@@ -54,7 +54,7 @@ function determinePlayerArmorType() {
 	return armorType;
 }
 
-function determineComputerArmorType() {
+function getComputerArmorType() {
 	let armorType;
 	if(rollTheDice(2) === 1){
 		armorType = "leather";
@@ -64,7 +64,7 @@ function determineComputerArmorType() {
 	return armorType;
 }
 
-function determineBaseDamage(move) {
+function getBaseDamage(move) {
 	let roll = rollTheDice(16)
 	if (move === "attack"){
 		return Math.sign(-1) * roll;
@@ -73,15 +73,18 @@ function determineBaseDamage(move) {
 	}
 }
 
-function determineTotalDamage(baseDamage, hit, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier) {
+function getTotalDamage(baseDamage, hit, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier) {
 	if(hit){
 		let totalDamage;
+		totalDamage = baseDamage * criticalStrikeMultiplier;
+		totalDamage *= devenseMultiplier - resistancePenetration;
+		return totalDamage;
 	} else{
 		return 0;
 	}
 }
 
-function defenseMultiplier(armorType, element) {
+function getDefenseMultiplier(armorType, element) {
 	if(armorType === "leather") {
 		if(element === "water" || element === "electric") {
 			return .6;
@@ -97,16 +100,16 @@ function defenseMultiplier(armorType, element) {
 	}
 }
 
-function determineResistancePenetration() {
+function getResistancePenetration() {
 	roll = rollTheDice(8);
 	if(roll > 4){
-		return 1 + ((roll - 4) * .04);
+		return (roll - 4) * .04;
 	} else{
-		return 1 - (roll * .02);
+		return roll * .02;
 	}
 }
 
-function elementRoll() {
+function getElement() {
 	roll = rollTheDice(4);
 	if(roll === 1){
 		return "water";
@@ -119,11 +122,11 @@ function elementRoll() {
 	}
 }
 
-function elementDamage() {
+function getElementDamage() {
 	// Determines element damage bonus
 }
 
-function criticalStrikeMultiplier(armorType, element) { 
+function getCriticalStrikeMultiplier(armorType, element) { 
 	let critChance = rollTheDice(5);
 	if(critChance === 5){
 		if (armorType === "leather" && (element === "water" || element === "electric")){
@@ -141,7 +144,7 @@ function criticalStrikeMultiplier(armorType, element) {
 	}
 }
 
-function fatalBlow(previousHealth) {
+function getFatalBlow(previousHealth) {
 	if (previousHealth === 1){
 		let roll = rollTheDice(6);
 		if (roll <= 4){
@@ -164,7 +167,7 @@ function displayHealth(playerHealth, computerHealth) {
 	console.log(`Your opponent has ${computerHealth} remaining.`);
 }
 
-function computerMove(computerHealth) {
+function getComputerMove(computerHealth) {
 	if (computerHealth <= 10){
 		return "heal";
 	} else {
@@ -172,7 +175,7 @@ function computerMove(computerHealth) {
 	}
 }
 
-function playerMove() {
+function getPlayerMove() {
 	let invalidInput = true;
 	let move;
 	while(invalidInput){
