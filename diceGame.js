@@ -71,8 +71,12 @@ function playerMove() {
 	// Determines whether the player wishes to heal or attack
 }
 
-function displayWinner(playerHealth, computerHealth) {
-	// Determines who the winner was and displays it
+function displayWinner(playerHealth) {
+	if (playerHealth > 0){
+		alert("Congradulations!!! Your honor & reputation remains intact!!!");
+	} else{
+		alert("To your upmost disgrace you have been defeated!!!")
+	}
 }
 
 function playAgain() {
