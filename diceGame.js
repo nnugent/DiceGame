@@ -73,11 +73,25 @@ function determineTotalDamage(baseDamage, hit, armorType, element, resistance, c
 }
 
 function determineResistancePenetration() {
-	// Calculates your resistance penetration 
+	roll = rollTheDice(8);
+	if(roll > 4){
+		return 1 + ((roll - 4) * .04);
+	} else{
+		return 1 - (roll * .02);
+	}
 }
 
 function elementRoll() {
-	// Determines the element of the your attack
+	roll = rollTheDice(4);
+	if(roll === 1){
+		return "water";
+	} else if (roll === 2){
+		return "fire";
+	} else if (roll === 3){
+		return "electric";
+	} else {
+		return "physical";
+	}
 }
 
 function elementDamage() {
