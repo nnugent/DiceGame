@@ -1,5 +1,6 @@
 function runTheGame() {
 	// runs the actual game
+	determineHit("attack");
 }
 
 function playerTurn() {
@@ -10,8 +11,18 @@ function compterTurn() {
 	// contains all steps of the computers turn
 }
 
-function determineHit() {
+function determineHit(ability) {
 	// Determines whether or not your attack will hit or not 
+	if (ability === "attack"){
+		let roll = Math.floor(Math.random() * 4)+ 1;
+		if (roll === 1) {
+			return false;
+		} else{
+			return true;
+		}
+	} else {
+		return true;
+	}
 }
 
 function determineDamage() {
@@ -56,3 +67,4 @@ function playAgain() {
 }
 
 
+runTheGame();
