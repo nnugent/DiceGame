@@ -77,12 +77,29 @@ function determineResistancePenetration() {
 }
 
 function elementRoll() {
-	// Determines the element of the your attack & how much damage it adds
+	// Determines the element of the your attack
 }
 
-function criticalStrike(element, armorType) {
-	// Calculates if your attack will critically strike & how much damage it will do based on 
-	// the element of the attack and the armor type of the target 
+function elementDamage() {
+	// Determines element damage bonus
+}
+
+function criticalStrikeMultiplyer(armorType, element) { 
+	let critChance = rollTheDice(5);
+	if(critChance === 5){
+		if (armorType === "leather" && (element === "water" || element === "electric")){
+			return 1.3;
+		} else if(armorType === "plate" && (element === "fire" || element ==="physical")){
+			return 1.3;
+		} else if (armorType === "leather" && (element === "fire" || element ==="physical")){
+			return 1.7;
+		}
+		else if(armorType === "plate" && (element === "water" || element === "electric")){
+			return 1.7;
+		}
+	}else{
+		return 1;
+	}
 }
 
 function fatalBlow(previousHealth) {
