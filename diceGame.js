@@ -1,6 +1,8 @@
 function runTheGame() {
 	// runs the actual game
-	determineHit("attack");
+	do{
+
+	} while(playAgain());
 }
 
 function playerTurn() {
@@ -22,6 +24,10 @@ function determineHit(ability) {
 	} else {
 		return true;
 	}
+}
+
+function determineArmorType() {
+	// Determines the players prefered armor type
 }
 
 function determineDamage() {
@@ -80,8 +86,26 @@ function displayWinner(playerHealth) {
 }
 
 function playAgain() {
-	// Determines if the player would like to play again
+	let invalidInput = true;
+	let again;
+	while(invalidInput){
+		again = prompt("Would you like to play again? (yes or no)").toLowerCase();
+		try{
+			console.log(again);
+			if (again === "") throw "No input detected, please answer yes or no.";
+			if (!(again === "yes") && !(again === "no")){
+				throw "Invalid input, please answer yes or no.";
+			}
+			invalidInput = false;
+		}catch(err){
+			alert(err);
+		}
+	}
+	if (again === "yes"){
+		return true;
+	} else if (again === "no"){
+		return false;
+	}
 }
-
 
 runTheGame();
