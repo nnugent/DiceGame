@@ -66,7 +66,8 @@ function fatalBlow(previousHealth) {
 }
 
 function displayHealth(playerHealth, computerHealth) {
-	//Displays the health of both the computer and the player at the end of the turn
+	console.log(`You have ${playerHealth} remaining.`);
+	console.log(`Your opponent has ${computerHealth} remaining.`);
 }
 
 function computerMove() {
