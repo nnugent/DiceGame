@@ -73,10 +73,10 @@ function getBaseDamage(move) {
 	}
 }
 
-function getTotalDamage(baseDamage, hit, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier) {
+function getTotalDamage(hit, baseDamage, elementDamage, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier) {
 	if(hit){
-		let totalDamage;
-		totalDamage = baseDamage * criticalStrikeMultiplier;
+		let totalDamage = baseDamage + elementDamage;
+		totalDamage *= criticalStrikeMultiplier;
 		totalDamage *= devenseMultiplier - resistancePenetration;
 		return totalDamage;
 	} else{
@@ -123,7 +123,8 @@ function getElement() {
 }
 
 function getElementDamage() {
-	// Determines element damage bonus
+	let roll = rollTheDice(5);
+	return roll;
 }
 
 function getCriticalStrikeMultiplier(armorType, element) { 
