@@ -9,7 +9,6 @@ function runTheGame() {
 
 		while(playerHealth > 0 && computerHealth > 0){
 			turn++;
-			turn();
 		}
 		displayWinner(playerHealth);
 
@@ -26,7 +25,7 @@ function compterTurn() {
 
 function determineHit(ability) {
 	if (ability === "attack"){
-		let roll = Math.floor(Math.random() * 4)+ 1;
+		let roll = rollTheDice(4);
 		if (roll === 1) {
 			return false;
 		} else{
@@ -43,7 +42,6 @@ function determinePlayerArmorType() {
 	while(invalidInput){
 		armorType = prompt("Do you prefer leather or plate armor?").toLowerCase();
 		try{
-			console.log(armorType);
 			if (armorType === "") throw "No input detected, please answer either leather or plate.";
 			if (!(armorType === "leather") && !(armorType === "plate")){
 				throw "Invalid input, please answer leather or plate.";
@@ -58,7 +56,7 @@ function determinePlayerArmorType() {
 
 function determineComputerArmorType() {
 	let armorType;
-	if(Math.floor(Math.random() * 2) + 1 === 1){
+	if(rollTheDice(2) === 1){
 		armorType = "leather";
 	}else{
 		armorType = "plate";
@@ -66,8 +64,12 @@ function determineComputerArmorType() {
 	return armorType;
 }
 
-function determineDamage() {
+function determineBaseDamage() {
 	// Determines base damage or healing value
+}
+
+function determineTotalDamage(baseDamage, hit, armorType, element, resistance, criticalStrike) {
+	// body...
 }
 
 function determineResistancePenetration() {
@@ -85,14 +87,14 @@ function criticalStrike(element, armorType) {
 
 function fatalBlow(previousHealth) {
 	if (previousHealth === 1){
-		let roll = Math.floor(Math.random() * 6) + 1;
+		let roll = rollTheDice(6);
 		if (roll <= 4){
 			return false;
 		} else {
 			return true;
 		}
 	}else{
-		let roll = Math.floor(Math.random() * 6) + 1;
+		let roll = rollTheDice(6);
 		if (roll <= 2){
 			return false;
 		} else {
@@ -116,6 +118,22 @@ function computerMove(computerHealth) {
 
 function playerMove() {
 	// Determines whether the player wishes to heal or attack
+	let invalidInput = true;
+	let move;
+	while(invalidInput){
+		move = prompt("Would you like to heal or attack?").toLowerCase();
+		try{
+			console.log(move);
+			if (move === "") throw "No input detected, please answer heal or attack.";
+			if (!(move === "attack") && !(move === "heal")){
+				throw "Invalid input, please answer heal or attack.";
+			}
+			invalidInput = false;
+		}catch(err){
+			alert(err);
+		}
+	}
+	return move;
 }
 
 function displayWinner(playerHealth) {
@@ -149,5 +167,8 @@ function playAgain() {
 	}
 }
 
+function rollTheDice(sidesOfDice) {
+	return Math.floor(Math.random() * sidesOfDice) + 1;
+}
 
 runTheGame();
