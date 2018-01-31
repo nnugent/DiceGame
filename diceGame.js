@@ -12,7 +12,6 @@ function compterTurn() {
 }
 
 function determineHit(ability) {
-	// Determines whether or not your attack will hit or not 
 	if (ability === "attack"){
 		let roll = Math.floor(Math.random() * 4)+ 1;
 		if (roll === 1) {
@@ -43,7 +42,21 @@ function criticalStrike(element, armorType) {
 }
 
 function fatalBlow(previousHealth) {
-	// Calculates if fatal blows actually finish off their target
+	if (previousHealth === 1){
+		let roll = Math.floor(Math.random() * 6) + 1;
+		if (roll <= 4){
+			return false;
+		} else {
+			return true;
+		}
+	}else{
+		let roll = Math.floor(Math.random() * 6) + 1;
+		if (roll <= 2){
+			return false;
+		} else {
+			return true;
+		}
+	}
 }
 
 function displayHealth(playerHealth, computerHealth) {
