@@ -1,0 +1,58 @@
+function runTheGame() {
+	// runs the actual game
+}
+
+function playerTurn() {
+	// contains all steps of the players turn
+}
+
+function compterTurn() {
+	// contains all steps of the computers turn
+}
+
+function determineHit() {
+	// Determines whether or not your attack will hit or not 
+}
+
+function determineDamage() {
+	// Determines base damage or healing value
+}
+
+function determineResistancePenetration() {
+	// Calculates your resistance penetration 
+}
+
+function elementRoll() {
+	// Determines the element of the your attack & how much damage it adds
+}
+
+function criticalStrike(element, armorType) {
+	// Calculates if your attack will critically strike & how much damage it will do based on 
+	// the element of the attack and the armor type of the target 
+}
+
+function fatalBlow(previousHealth) {
+	// Calculates if fatal blows actually finish off their target
+}
+
+function displayHealth(playerHealth, computerHealth) {
+	//Displays the health of both the computer and the player at the end of the turn
+}
+
+function computerMove() {
+	// Determines whether the computer will heal or attack
+}
+
+function playerMove() {
+	// Determines whether the player wishes to heal or attack
+}
+
+function displayWinner(playerHealth, computerHealth) {
+	// Determines who the winner was and displays it
+}
+
+function playAgain() {
+	// Determines if the player would like to play again
+}
+
+
