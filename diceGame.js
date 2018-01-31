@@ -26,8 +26,33 @@ function determineHit(ability) {
 	}
 }
 
-function determineArmorType() {
-	// Determines the players prefered armor type
+function determinePlayerArmorType() {
+	let invalidInput = true;
+	let armorType;
+	while(invalidInput){
+		armorType = prompt("Do you prefer leather or plate armor?").toLowerCase();
+		try{
+			console.log(armorType);
+			if (armorType === "") throw "No input detected, please answer either leather or plate.";
+			if (!(armorType === "leather") && !(armorType === "plate")){
+				throw "Invalid input, please answer leather or plate.";
+			}
+			invalidInput = false;
+		}catch(err){
+			alert(err);
+		}
+	}
+	return armorType;
+}
+
+function determineComputerArmorType() {
+	let armorType;
+	if(Math.floor(Math.random() * 2) + 1 === 1){
+		armorType = "leather";
+	}else{
+		armorType = "plate";
+	}
+	return armorType;
 }
 
 function determineDamage() {
