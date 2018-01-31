@@ -1,6 +1,17 @@
 function runTheGame() {
 	// runs the actual game
 	do{
+		let turn = 0;
+		let playerHealth = 100;
+		let computerHealth = 100;
+		let playerAmrmor = determinePlayerArmorType();
+		let computerArmor = determineComputerArmorType();
+
+		while(playerHealth > 0 && computerHealth > 0){
+			turn++;
+			turn();
+		}
+		displayWinner(playerHealth);
 
 	} while(playAgain());
 }
@@ -95,8 +106,12 @@ function displayHealth(playerHealth, computerHealth) {
 	console.log(`Your opponent has ${computerHealth} remaining.`);
 }
 
-function computerMove() {
-	// Determines whether the computer will heal or attack
+function computerMove(computerHealth) {
+	if (computerHealth <= 10){
+		return "heal";
+	} else {
+		return "attack";
+	}
 }
 
 function playerMove() {
@@ -133,5 +148,6 @@ function playAgain() {
 		return false;
 	}
 }
+
 
 runTheGame();
