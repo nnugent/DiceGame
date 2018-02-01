@@ -56,7 +56,9 @@ function getComputerHealth(difficulty) {
 		return 100;
 	} else {
 		let roll = rollTheDice(20);
-		return 5 * roll;
+		let difficultyScaling = roll * 5;
+		console.log("Your difficulty was increased by " + difficultyScaling + "%.");
+		return difficultyScaling;
 	}
 }
 function getHitChance(ability) {
