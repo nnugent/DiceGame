@@ -3,30 +3,57 @@ function runTheGame() {
 	do{
 		let turn = 0;
 		let playerHealth = 100;
-		let computerHealth = 100;
+		let computerHealth = getComputerHealth(getDifficulty());
 		let playerArmor = getPlayerArmorType();
 		let computerArmor = getComputerArmorType();
 
 		while(playerHealth > 0 && computerHealth > 0){
 			turn++;
+			alert("Turn: " + turn);
 		}
 		displayWinner(playerHealth);
 
 	} while(playAgain());
 }
 
-function playerTurn(computerArmor) {
+function playerTurn(computerArmor, playerMove) {
 	// contains all steps of the players turn
-	let playerMove = getPlayerMove();
 	alert("You chose to " + playerMove + " .");
-	let hitChance = getHitChance(playerMove);
-	let baseDamage = getBaseDamage();
-	alert("Your base damage rolled to " + baseDamage + ".");
-	let elementType = getElementType();
-	let elementDamage = getElementDamage();
-	alert("Your element rolled to " + ElementType + " and it does " + elementDamage + " bonus damage.");
-	let defenseMultiplier = getDefenseMultiplier();
-	let resistancePenetration = getResistancePenetration();
+	if(playerMove === "attack"){
+		let hitChance = getHitChance(playerMove);
+		if(hitChance){
+			let baseDamage = getBaseDamage(playerMove);
+			alert("Your base damage rolled to " + baseDamage + ".");
+			let elementType = getElementType();
+			let elementDamage = getElementDamage();
+			alert("Your element rolled to " + elementType + " and it does " + elementDamage + " bonus damage.");
+			let defenseMultiplier = getDefenseMultiplier(computerArmor, elementType);
+			let resistancePenetration = getResistancePenetration();
+			alert("Your enemy has an inate " + defenseMultiplier * 100 + "% resistance to your attacks and your armor resistance penetration rolled to " + resistancePenetration * 100 + "%.");
+			let criticalStrikeMultiplier = getCriticalStrikeMultiplier(computerArmor, elementType);
+			if(criticalStrikeMultiplier === 1){
+				alert("You did not crit this turn.");
+			}else{
+				alert("You crit! Your multiplier is " + criticalStrikeMultiplier + "!")
+			}
+			let totalDamage = getTotalDamage(baseDamage, elementDamage, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier);
+			alert("Your total damage dealt is " + totalDamage + ".")
+			return Math.sign(-1) * totalDamage;
+		}else{
+			alert("Your attack missed.");
+			return 0;
+		}
+	}else {
+		let baseDamage = getBaseDamage(playerMove);
+		let elementType = getElementType();
+		let elementDamage = getElementDamage();
+		if(elementType === "water"){
+			alert("Your element rolled to water so your heal is extremely effective!!!");
+		}
+		let totalHealing = getTotalHealing(baseDamage, elementType, elementDamage);
+		alert("You heal yourself for " + totalHealing + ".");
+		return totalHealing;
+	}
 }
 
 function compterTurn(playerArmor) {
@@ -57,7 +84,7 @@ function getComputerHealth(difficulty) {
 	} else {
 		let roll = rollTheDice(20);
 		let difficultyScaling = roll * 5;
-		console.log("Your difficulty was increased by " + difficultyScaling + "%.");
+		alert("Your difficulty was increased by " + difficultyScaling + "%.");
 		return difficultyScaling;
 	}
 }
@@ -107,20 +134,27 @@ function getComputerArmorType() {
 function getBaseDamage(move) {
 	let roll = rollTheDice(16)
 	if (move === "attack"){
-		return Math.sign(-1) * roll;
+		return roll;
 	} else{
 		return Math.ceil(roll / 2);
 	}
 }
 
-function getTotalDamage(hit, baseDamage, elementDamage, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier) {
-	if(hit){
-		let totalDamage = baseDamage + elementDamage;
-		totalDamage *= criticalStrikeMultiplier;
-		totalDamage *= devenseMultiplier - resistancePenetration;
-		return totalDamage;
-	} else{
-		return 0;
+function getTotalDamage(baseDamage, elementDamage, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier) {
+	let totalDamage = baseDamage + elementDamage;
+	totalDamage *= criticalStrikeMultiplier;
+	totalDamage *= defenseMultiplier + resistancePenetration;
+	return Math.round(totalDamage);
+}
+
+function getTotalHealing(baseDamage, elementType, elementDamage) {
+	let totalHealing = baseDamage;
+	if(elementType === "water"){
+		totalHealing *= elementDamage;
+		return totalHealing;
+	}
+	else{
+		return totalHealing;
 	}
 }
 
@@ -270,4 +304,6 @@ function rollTheDice(sidesOfDice) {
 	return Math.floor(Math.random() * sidesOfDice) + 1;
 }
 
-runTheGame();       
+// runTheGame(); 
+
+playerTurn("leather");      
