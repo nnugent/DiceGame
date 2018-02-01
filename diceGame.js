@@ -12,65 +12,84 @@ function runTheGame() {
 		while(playerHealth > 0 && computerHealth > 0){
 			turn++;
 			alert("Turn: " + turn);
-			console.log("Turn: " + turn);
 			let whoIsFirst = rollTheDice(2);
 			if(whoIsFirst === 1){
-				alert("You go first this turn.");
-				playerMove = getPlayerMove();
-				if(playerMove === "attack"){
-					computerHealth = calculateHealth(computerHealth, playerAttack(computerArmor));
-				}else{
-					playerHealth = calculateHealth(playerHealth, playerHeal());
-				}
+				let healthArray = playerFirst(playerHealth, computerHealth, playerArmor, computerArmor, turn);
+				playerHealth = healthArray[0];
+				computerHealth = healthArray[1];
 				if(playerHealth === 0 || computerHealth === 0){
 					break;
 				}
-				console.clear();
-				console.log("Turn: " + turn);
-				displayHealth(playerHealth, computerHealth);
-				computerMove = getComputerMove(computerHealth);
-				if(computerMove === "attack"){
-					playerHealth = calculateHealth(playerHealth, computerAttack(playerArmor));
-				}else{
-					computerHealth = calculateHealth(computerHealth, computerHeal());
-				}
-				if(playerHealth === 0 || computerHealth === 0){
-					break;
-				}
-				console.clear();
-				console.log("Turn: " + turn);
-				displayHealth(playerHealth, computerHealth);
 			}else{
-				alert("The computer goes first this turn.");
-				computerMove = getComputerMove(computerHealth);
-				if(computerMove === "attack"){
-					playerHealth = calculateHealth(playerHealth, computerAttack(playerArmor));
-				}else{
-					computerHealth = calculateHealth(computerHealth, computerHeal());
-				}
+				let healthArray = computerFirst(playerHealth, computerHealth, playerArmor, computerArmor, turn);
+				playerHealth = healthArray[0];
+				computerHealth = healthArray[1];
 				if(playerHealth === 0 || computerHealth === 0){
 					break;
-				}
-				console.clear();
-				console.log("Turn: " + turn);
-				displayHealth(playerHealth, computerHealth);
-				playerMove = getPlayerMove();
-				if(playerMove === "attack"){
-					computerHealth = calculateHealth(computerHealth, playerAttack(computerArmor));
-				}else{
-					playerHealth = calculateHealth(playerHealth, playerHeal());
-				}
-				if(playerHealth === 0 || computerHealth === 0){
-					break;
-				}
-				console.clear();
-				console.log("Turn: " + turn);
-				displayHealth(playerHealth, computerHealth);
+				}	
 			}
 		}
 		displayWinner(playerHealth);
 
 	} while(playAgain());
+}
+
+function playerFirst(playerHealth, computerHealth, playerArmor, computerArmor, turn) {
+	alert("You go first this turn.");
+	playerMove = getPlayerMove();
+	if(playerMove === "attack"){
+		computerHealth = calculateHealth(computerHealth, playerAttack(computerArmor));
+	}else{
+		playerHealth = calculateHealth(playerHealth, playerHeal());
+	}
+	if(playerHealth === 0 || computerHealth === 0){
+		return [playerHealth, computerHealth];
+	}
+	console.clear();
+	console.log("Turn: " + turn);
+	displayHealth(playerHealth, computerHealth);
+	computerMove = getComputerMove(computerHealth);
+	if(computerMove === "attack"){
+		playerHealth = calculateHealth(playerHealth, computerAttack(playerArmor));
+	}else{
+		computerHealth = calculateHealth(computerHealth, computerHeal());
+	}
+	if(playerHealth === 0 || computerHealth === 0){
+		return [playerHealth, computerHealth];
+	}
+	console.clear();
+	console.log("Turn: " + turn);
+	displayHealth(playerHealth, computerHealth);
+	return [playerHealth, computerHealth];
+}
+
+function computerFirst(playerHealth, computerHealth, playerArmor, computerArmor, turn) {
+	alert("The computer goes first this turn.");
+	computerMove = getComputerMove(computerHealth);
+	if(computerMove === "attack"){
+		playerHealth = calculateHealth(playerHealth, computerAttack(playerArmor));
+	}else{
+		computerHealth = calculateHealth(computerHealth, computerHeal());
+	}
+	if(playerHealth === 0 || computerHealth === 0){
+		return [playerHealth, computerHealth];
+	}
+	console.clear();
+	console.log("Turn: " + turn);
+	displayHealth(playerHealth, computerHealth);
+	playerMove = getPlayerMove();
+	if(playerMove === "attack"){
+		computerHealth = calculateHealth(computerHealth, playerAttack(computerArmor));
+	}else{
+		playerHealth = calculateHealth(playerHealth, playerHeal());
+	}
+	if(playerHealth === 0 || computerHealth === 0){
+		return [playerHealth, computerHealth];
+	}
+	console.clear();
+	console.log("Turn: " + turn);
+	displayHealth(playerHealth, computerHealth);
+	return [playerHealth, computerHealth];
 }
 
 function playerAttack(computerArmor) {
@@ -400,4 +419,3 @@ function rollTheDice(sidesOfDice) {
 }
 
 runTheGame(); 
-   
