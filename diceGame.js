@@ -6,6 +6,8 @@ function runTheGame() {
 		let computerHealth = getComputerHealth(getDifficulty());
 		let playerArmor = getPlayerArmorType();
 		let computerArmor = getComputerArmorType();
+		alert("The computer has " + computerArmor + " armor.")
+		displayHealth(playerHealth, computerHealth);
 
 		while(playerHealth > 0 && computerHealth > 0){
 			turn++;
@@ -14,31 +16,55 @@ function runTheGame() {
 			if(whoIsFirst === 1){
 				alert("You go first this turn.");
 				playerMove = getPlayerMove();
-				if(playerMove === "attack"){				}
-					computerHealth -= playerTurn(computerArmor, playerMove);
+				if(playerMove === "attack"){
+					computerHealth = calculateHealth(computerHealth, playerTurn(computerArmor, playerMove));
 				}else{
-					playerHealth += playerTurn(computerArmor, playerMove);
+					playerHealth = calculateHealth(playerHealth, playerTurn(computerArmor, playerMove));
 				}
-				computerMove = getComputerMove();
+				if(playerHealth === 0 || computerHealth === 0){
+					break;
+				}
+				console.clear();
+				console.log("Turn: " + turn);
+				displayHealth(playerHealth, computerHealth);
+				computerMove = getComputerMove(computerHealth);
 				if(computerMove === "attack"){
-					playerHealth -= computerTurn(playerArmor, computerMove);
+					playerHealth = calculateHealth(playerHealth, computerTurn(playerArmor, computerMove));
 				}else{
-					computerHealth += computerTurn(playerArmor, computerMove);
+					computerHealth = calculateHealth(computerHealth, computerTurn(playerArmor, computerMove));
 				}
+				if(playerHealth === 0 || computerHealth === 0){
+					break;
+				}
+				console.clear();
+				console.log("Turn: " + turn);
+				displayHealth(playerHealth, computerHealth);
 			}else{
 				alert("The computer goes first this turn.");
-				computerMove = getComputerMove();
+				computerMove = getComputerMove(computerHealth);
 				if(computerMove === "attack"){
-					playerHealth -= computerTurn(playerArmor, computerMove);
+					playerHealth = calculateHealth(playerHealth, computerTurn(playerArmor, computerMove));
 				}else{
-					computerHealth += computerTurn(playerArmor, computerMove);
+					computerHealth = calculateHealth(computerHealth, computerTurn(playerArmor, computerMove));
 				}
+				if(playerHealth === 0 || computerHealth === 0){
+					break;
+				}
+				console.clear();
+				console.log("Turn: " + turn);
+				displayHealth(playerHealth, computerHealth);
 				playerMove = getPlayerMove();
-				if(playerMove === "attack"){				}
-					computerHealth -= playerTurn(computerArmor, playerMove);
+				if(playerMove === "attack"){
+					computerHealth = calculateHealth(computerHealth, playerTurn(computerArmor, playerMove));
 				}else{
-					playerHealth += playerTurn(computerArmor, playerMove);
+					playerHealth = calculateHealth(playerHealth, playerTurn(computerArmor, playerMove));
 				}
+				if(playerHealth === 0 || computerHealth === 0){
+					break;
+				}
+				console.clear();
+				console.log("Turn: " + turn);
+				displayHealth(playerHealth, computerHealth);
 			}
 		}
 		displayWinner(playerHealth);
@@ -53,18 +79,18 @@ function playerTurn(computerArmor, playerMove) {
 		let hitChance = getHitChance(playerMove);
 		if(hitChance){
 			let baseDamage = getBaseDamage(playerMove);
-			alert("Your base damage rolled to " + baseDamage + ".");
+			console.log("Your base damage rolled to " + baseDamage + ".");
 			let elementType = getElementType();
 			let elementDamage = getElementDamage();
-			alert("Your element rolled to " + elementType + " and it does " + elementDamage + " bonus damage.");
+			console.log("Your element rolled to " + elementType + " and it does " + elementDamage + " bonus damage.");
 			let defenseMultiplier = getDefenseMultiplier(computerArmor, elementType);
 			let resistancePenetration = getResistancePenetration();
-			alert("Your enemy has an inate " + defenseMultiplier * 100 + "% resistance to your attacks and your armor resistance penetration rolled to " + resistancePenetration * 100 + "%.");
+			console.log(computerArmor + " armor takes " + defenseMultiplier * 100 + "% damage from " + elementType + " attacks but your armor penetration rolled to " + resistancePenetration * 100 + "%.");
 			let criticalStrikeMultiplier = getCriticalStrikeMultiplier(computerArmor, elementType);
 			if(criticalStrikeMultiplier === 1){
-				alert("You did not crit this turn.");
+				console.log("You did not crit this turn.");
 			}else{
-				alert("You crit! Your multiplier is " + criticalStrikeMultiplier + "!")
+				console.log("You crit! Your multiplier is " + criticalStrikeMultiplier + "!")
 			}
 			let totalDamage = getTotalDamage(baseDamage, elementDamage, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier);
 			alert("Your total damage dealt is " + totalDamage + ".")
@@ -82,28 +108,28 @@ function playerTurn(computerArmor, playerMove) {
 		}
 		let totalHealing = getTotalHealing(baseDamage, elementType, elementDamage);
 		alert("You heal yourself for " + totalHealing + ".");
-		return totalHealing;
+		return Math.sign(-1) * totalHealing;
 	}
 }
 
-function compterTurn(playerArmor, computerMove) {
+function computerTurn(playerArmor, computerMove) {
 	alert("The computer chose to " + computerMove + " .");
 	if(computerMove === "attack"){
 		let hitChance = getHitChance(computerMove);
 		if(hitChance){
 			let baseDamage = getBaseDamage(computerMove);
-			alert("The computer's base damage rolled to " + baseDamage + ".");
+			console.log("The computer's base damage rolled to " + baseDamage + ".");
 			let elementType = getElementType();
 			let elementDamage = getElementDamage();
-			alert("The computer's element rolled to " + elementType + " and it does " + elementDamage + " bonus damage.");
-			let defenseMultiplier = getDefenseMultiplier(computerArmor, elementType);
+			console.log("The computer's element rolled to " + elementType + " and it does " + elementDamage + " bonus damage.");
+			let defenseMultiplier = getDefenseMultiplier(playerArmor, elementType);
 			let resistancePenetration = getResistancePenetration();
-			alert("You enemy has an inate " + defenseMultiplier * 100 + "% resistance to the computer's attacks and the computer's armor penetration rolled to " + resistancePenetration * 100 + "%.");
-			let criticalStrikeMultiplier = getCriticalStrikeMultiplier(computerArmor, elementType);
+			console.log(playerArmor + " armor takes " + defenseMultiplier * 100 + "% damage from " + elementType + " attacks but the computers armor penetration rolled to " + resistancePenetration * 100 + "%.");
+			let criticalStrikeMultiplier = getCriticalStrikeMultiplier(playerArmor, elementType);
 			if(criticalStrikeMultiplier === 1){
-				alert("The computer did not crit this turn.");
+				console.log("The computer did not crit this turn.");
 			}else{
-				alert("The computer crit! Its multiplier is " + criticalStrikeMultiplier + "!")
+				console.log("The computer crit! Its multiplier is " + criticalStrikeMultiplier + "!")
 			}
 			let totalDamage = getTotalDamage(baseDamage, elementDamage, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier);
 			alert("The total damage dealt is " + totalDamage + ".")
@@ -117,11 +143,11 @@ function compterTurn(playerArmor, computerMove) {
 		let elementType = getElementType();
 		let elementDamage = getElementDamage();
 		if(elementType === "water"){
-			alert("The computer's element rolled to water so its heal is extremely effective!!!");
+			console.log("The computer's element rolled to water so its heal is extremely effective!!!");
 		}
 		let totalHealing = getTotalHealing(baseDamage, elementType, elementDamage);
 		alert("The computer heals itself for " + totalHealing + ".");
-		return totalHealing;
+		return Math.sign(-1) * totalHealing;
 	}
 }
 
@@ -129,7 +155,7 @@ function getDifficulty() {
 	let invalidInput = true;
 	let difficulty;
 	while(invalidInput){
-		difficulty = prompt("Would you like to play on normal or a randomly generated difficulty? (normal/random)").toLowerCase();
+		difficulty = prompt("Would you like to play on normal or increase the difficulty by a random amount? (normal/random)").toLowerCase();
 		try{
 			if (difficulty === "") throw "No input detected, please answer either normal or random.";
 			if (!(difficulty === "normal") && !(difficulty === "random")){
@@ -144,23 +170,23 @@ function getDifficulty() {
 }
 
 function getComputerHealth(difficulty) {
-	if(difficutly === "normal"){
+	if(difficulty === "normal"){
 		return 100;
 	} else {
 		let roll = rollTheDice(20);
 		let difficultyScaling = roll * 5;
 		alert("Your difficulty was increased by " + difficultyScaling + "%.");
-		return difficultyScaling;
+		return difficultyScaling + 100;
 	}
 }
 function getHitChance(ability) {
 	if (ability === "attack"){
 		let roll = rollTheDice(4);
 		if (roll === 1) {
-			console.log("Your hit chance rolled a " + roll + ". Your attack misses.");
+			console.log("Hit chance rolled a " + roll + ". The attack misses.");
 			return false;
 		} else{
-			console.log("Your hit chance rolled a " + roll + ". Your attack connects.");
+			console.log("Hit chance rolled a " + roll + ". The attack connects.");
 			return true;
 		}
 	} else {
@@ -197,7 +223,7 @@ function getComputerArmorType() {
 }
 
 function getBaseDamage(move) {
-	let roll = rollTheDice(16)
+	let roll = rollTheDice(18)
 	if (move === "attack"){
 		return roll;
 	} else{
@@ -215,7 +241,7 @@ function getTotalDamage(baseDamage, elementDamage, defenseMultiplier, resistance
 function getTotalHealing(baseDamage, elementType, elementDamage) {
 	let totalHealing = baseDamage;
 	if(elementType === "water"){
-		totalHealing *= elementDamage;
+		totalHealing *= elementDamage + 3;
 		return totalHealing;
 	}
 	else{
@@ -241,11 +267,7 @@ function getDefenseMultiplier(armorType, element) {
 
 function getResistancePenetration() {
 	roll = rollTheDice(8);
-	if(roll > 4){
-		return (roll - 4) * .04;
-	} else{
-		return roll * .02;
-	}
+	return roll * .04
 }
 
 function getElementType() {
@@ -284,27 +306,33 @@ function getCriticalStrikeMultiplier(armorType, element) {
 	}
 }
 
-function getFatalBlow(previousHealth) {
-	if (previousHealth === 1){
+function calculateHealth(health, damage) {
+	let previousHealth = health;
+	health -= damage;
+	if (previousHealth === 1 && health < 1){
 		let roll = rollTheDice(6);
 		if (roll <= 4){
-			return false;
+			return 0;
 		} else {
-			return true;
+			alert("Resisted Death.")
+			return 1;
 		}
-	}else{
+	}else if(previousHealth > 1 && health <1){
 		let roll = rollTheDice(6);
 		if (roll <= 2){
-			return false;
+			return 0;
 		} else {
-			return true;
+			alert("Resisted Death.")
+			return 1;
 		}
+	}else{
+		return health;
 	}
 }
 
 function displayHealth(playerHealth, computerHealth) {
-	console.log(`You have ${playerHealth} remaining.`);
-	console.log(`Your opponent has ${computerHealth} remaining.`);
+	console.log(`You have ${playerHealth} health remaining.`);
+	console.log(`Your opponent has ${computerHealth} health remaining.`);
 }
 
 function getComputerMove(computerHealth) {
@@ -321,7 +349,6 @@ function getPlayerMove() {
 	while(invalidInput){
 		move = prompt("Would you like to heal or attack?").toLowerCase();
 		try{
-			console.log(move);
 			if (move === "") throw "No input detected, please answer heal or attack.";
 			if (!(move === "attack") && !(move === "heal")){
 				throw "Invalid input, please answer heal or attack.";
@@ -348,7 +375,6 @@ function playAgain() {
 	while(invalidInput){
 		again = prompt("Would you like to play again? (yes or no)").toLowerCase();
 		try{
-			console.log(again);
 			if (again === "") throw "No input detected, please answer yes or no.";
 			if (!(again === "yes") && !(again === "no")){
 				throw "Invalid input, please answer yes or no.";
