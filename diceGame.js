@@ -12,14 +12,15 @@ function runTheGame() {
 		while(playerHealth > 0 && computerHealth > 0){
 			turn++;
 			alert("Turn: " + turn);
+			console.log("Turn: " + turn);
 			let whoIsFirst = rollTheDice(2);
 			if(whoIsFirst === 1){
 				alert("You go first this turn.");
 				playerMove = getPlayerMove();
 				if(playerMove === "attack"){
-					computerHealth = calculateHealth(computerHealth, playerTurn(computerArmor, playerMove));
+					computerHealth = calculateHealth(computerHealth, playerAttack(computerArmor));
 				}else{
-					playerHealth = calculateHealth(playerHealth, playerTurn(computerArmor, playerMove));
+					playerHealth = calculateHealth(playerHealth, playerHeal());
 				}
 				if(playerHealth === 0 || computerHealth === 0){
 					break;
@@ -29,9 +30,9 @@ function runTheGame() {
 				displayHealth(playerHealth, computerHealth);
 				computerMove = getComputerMove(computerHealth);
 				if(computerMove === "attack"){
-					playerHealth = calculateHealth(playerHealth, computerTurn(playerArmor, computerMove));
+					playerHealth = calculateHealth(playerHealth, computerAttack(playerArmor));
 				}else{
-					computerHealth = calculateHealth(computerHealth, computerTurn(playerArmor, computerMove));
+					computerHealth = calculateHealth(computerHealth, computerHeal());
 				}
 				if(playerHealth === 0 || computerHealth === 0){
 					break;
@@ -43,9 +44,9 @@ function runTheGame() {
 				alert("The computer goes first this turn.");
 				computerMove = getComputerMove(computerHealth);
 				if(computerMove === "attack"){
-					playerHealth = calculateHealth(playerHealth, computerTurn(playerArmor, computerMove));
+					playerHealth = calculateHealth(playerHealth, computerAttack(playerArmor));
 				}else{
-					computerHealth = calculateHealth(computerHealth, computerTurn(playerArmor, computerMove));
+					computerHealth = calculateHealth(computerHealth, computerHeal());
 				}
 				if(playerHealth === 0 || computerHealth === 0){
 					break;
@@ -55,9 +56,9 @@ function runTheGame() {
 				displayHealth(playerHealth, computerHealth);
 				playerMove = getPlayerMove();
 				if(playerMove === "attack"){
-					computerHealth = calculateHealth(computerHealth, playerTurn(computerArmor, playerMove));
+					computerHealth = calculateHealth(computerHealth, playerAttack(computerArmor));
 				}else{
-					playerHealth = calculateHealth(playerHealth, playerTurn(computerArmor, playerMove));
+					playerHealth = calculateHealth(playerHealth, playerHeal());
 				}
 				if(playerHealth === 0 || computerHealth === 0){
 					break;
@@ -72,83 +73,85 @@ function runTheGame() {
 	} while(playAgain());
 }
 
-function playerTurn(computerArmor, playerMove) {
+function playerAttack(computerArmor) {
 	// contains all steps of the players turn
-	alert("You chose to " + playerMove + " .");
-	if(playerMove === "attack"){
-		let hitChance = getHitChance(playerMove);
-		if(hitChance){
-			let baseDamage = getBaseDamage(playerMove);
-			console.log("Your base damage rolled to " + baseDamage + ".");
-			let elementType = getElementType();
-			let elementDamage = getElementDamage();
-			console.log("Your element rolled to " + elementType + " and it does " + elementDamage + " bonus damage.");
-			let defenseMultiplier = getDefenseMultiplier(computerArmor, elementType);
-			let resistancePenetration = getResistancePenetration();
-			console.log(computerArmor + " armor takes " + defenseMultiplier * 100 + "% damage from " + elementType + " attacks but your armor penetration rolled to " + resistancePenetration * 100 + "%.");
-			let criticalStrikeMultiplier = getCriticalStrikeMultiplier(computerArmor, elementType);
-			if(criticalStrikeMultiplier === 1){
-				console.log("You did not crit this turn.");
-			}else{
-				console.log("You crit! Your multiplier is " + criticalStrikeMultiplier + "!")
-			}
-			let totalDamage = getTotalDamage(baseDamage, elementDamage, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier);
-			alert("Your total damage dealt is " + totalDamage + ".")
-			return totalDamage;
-		}else{
-			alert("Your attack missed.");
-			return 0;
-		}
-	}else {
+	alert("You chose to attack.");
+	let hitChance = getHitChance(playerMove);
+	if(hitChance){
 		let baseDamage = getBaseDamage(playerMove);
+		console.log("Your base damage rolled to " + baseDamage + ".");
 		let elementType = getElementType();
 		let elementDamage = getElementDamage();
-		if(elementType === "water"){
-			alert("Your element rolled to water so your heal is extremely effective!!!");
+		console.log("Your element rolled to " + elementType + " and it does " + elementDamage + " bonus damage.");
+		let defenseMultiplier = getDefenseMultiplier(computerArmor, elementType);
+		let resistancePenetration = getResistancePenetration();
+		console.log(computerArmor + " armor takes " + defenseMultiplier * 100 + "% damage from " + elementType + " attacks but your armor penetration rolled to " + resistancePenetration * 100 + "%.");
+		let criticalStrikeMultiplier = getCriticalStrikeMultiplier(computerArmor, elementType);
+		if(criticalStrikeMultiplier === 1){
+			console.log("You did not crit this turn.");
+		}else{
+			console.log("You crit! Your multiplier is " + criticalStrikeMultiplier + "!")
 		}
-		let totalHealing = getTotalHealing(baseDamage, elementType, elementDamage);
-		alert("You heal yourself for " + totalHealing + ".");
-		return Math.sign(-1) * totalHealing;
+		let totalDamage = getTotalDamage(baseDamage, elementDamage, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier);
+		alert("Your total damage dealt is " + totalDamage + ".")
+		return totalDamage;
+	}else{
+		alert("Your attack missed.");
+		return 0;
 	}
 }
 
-function computerTurn(playerArmor, computerMove) {
-	alert("The computer chose to " + computerMove + " .");
-	if(computerMove === "attack"){
-		let hitChance = getHitChance(computerMove);
-		if(hitChance){
-			let baseDamage = getBaseDamage(computerMove);
-			console.log("The computer's base damage rolled to " + baseDamage + ".");
-			let elementType = getElementType();
-			let elementDamage = getElementDamage();
-			console.log("The computer's element rolled to " + elementType + " and it does " + elementDamage + " bonus damage.");
-			let defenseMultiplier = getDefenseMultiplier(playerArmor, elementType);
-			let resistancePenetration = getResistancePenetration();
-			console.log(playerArmor + " armor takes " + defenseMultiplier * 100 + "% damage from " + elementType + " attacks but the computers armor penetration rolled to " + resistancePenetration * 100 + "%.");
-			let criticalStrikeMultiplier = getCriticalStrikeMultiplier(playerArmor, elementType);
-			if(criticalStrikeMultiplier === 1){
-				console.log("The computer did not crit this turn.");
-			}else{
-				console.log("The computer crit! Its multiplier is " + criticalStrikeMultiplier + "!")
-			}
-			let totalDamage = getTotalDamage(baseDamage, elementDamage, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier);
-			alert("The total damage dealt is " + totalDamage + ".")
-			return totalDamage;
-		}else{
-			alert("The computer's attack missed.");
-			return 0;
-		}
-	}else {
+function playerHeal() {
+	alert("You chose to heal.")
+	let baseDamage = getBaseDamage(playerMove);
+	let elementType = getElementType();
+	let elementDamage = getElementDamage();
+	if(elementType === "water"){
+		alert("Your element rolled to water so your heal is extremely effective!!!");
+	}
+	let totalHealing = getTotalHealing(baseDamage, elementType, elementDamage);
+	alert("You heal yourself for " + totalHealing + ".");
+	return Math.sign(-1) * totalHealing;
+}
+
+function computerAttack(playerArmor) {
+	alert("The computer chose to attack.");
+	let hitChance = getHitChance(computerMove);
+	if(hitChance){
 		let baseDamage = getBaseDamage(computerMove);
+		console.log("The computer's base damage rolled to " + baseDamage + ".");
 		let elementType = getElementType();
 		let elementDamage = getElementDamage();
-		if(elementType === "water"){
-			console.log("The computer's element rolled to water so its heal is extremely effective!!!");
+		console.log("The computer's element rolled to " + elementType + " and it does " + elementDamage + " bonus damage.");
+		let defenseMultiplier = getDefenseMultiplier(playerArmor, elementType);
+		let resistancePenetration = getResistancePenetration();
+		console.log(playerArmor + " armor takes " + defenseMultiplier * 100 + "% damage from " + elementType + " attacks but the computers armor penetration rolled to " + resistancePenetration * 100 + "%.");
+		let criticalStrikeMultiplier = getCriticalStrikeMultiplier(playerArmor, elementType);
+		if(criticalStrikeMultiplier === 1){
+			console.log("The computer did not crit this turn.");
+		}else{
+			console.log("The computer crit! Its multiplier is " + criticalStrikeMultiplier + "!")
 		}
-		let totalHealing = getTotalHealing(baseDamage, elementType, elementDamage);
-		alert("The computer heals itself for " + totalHealing + ".");
-		return Math.sign(-1) * totalHealing;
+		let totalDamage = getTotalDamage(baseDamage, elementDamage, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier);
+		alert("The total damage dealt is " + totalDamage + ".")
+		return totalDamage;
+	}else{
+		alert("The computer's attack missed.");
+		return 0;
 	}
+}
+
+function computerHeal() {
+	alert("The computer chose to heal.");
+	let baseDamage = getBaseDamage(computerMove);
+	let elementType = getElementType();
+	let elementDamage = getElementDamage();
+	if(elementType === "water"){
+		console.log("The computer's element rolled to water so its heal is extremely effective!!!");
+	}
+	let totalHealing = getTotalHealing(baseDamage, elementType, elementDamage);
+	alert("The computer heals itself for " + totalHealing + ".");
+	return Math.sign(-1) * totalHealing;
 }
 
 function getDifficulty() {
@@ -179,6 +182,7 @@ function getComputerHealth(difficulty) {
 		return difficultyScaling + 100;
 	}
 }
+
 function getHitChance(ability) {
 	if (ability === "attack"){
 		let roll = rollTheDice(4);
