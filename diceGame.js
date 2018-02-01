@@ -33,6 +33,32 @@ function compterTurn(playerArmor) {
 	// contains all steps of the computers turn
 }
 
+function getDifficulty() {
+	let invalidInput = true;
+	let difficulty;
+	while(invalidInput){
+		difficulty = prompt("Would you like to play on normal or a randomly generated difficulty? (normal/random)").toLowerCase();
+		try{
+			if (difficulty === "") throw "No input detected, please answer either normal or random.";
+			if (!(difficulty === "normal") && !(difficulty === "random")){
+				throw "Invalid input, please answer normal or random.";
+			}
+			invalidInput = false;
+		}catch(err){
+			alert(err);
+		}
+	}
+	return difficulty;
+}
+
+function getComputerHealth(difficulty) {
+	if(difficutly === "normal"){
+		return 100;
+	} else {
+		let roll = rollTheDice(20);
+		return 5 * roll;
+	}
+}
 function getHitChance(ability) {
 	if (ability === "attack"){
 		let roll = rollTheDice(4);
