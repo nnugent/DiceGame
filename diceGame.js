@@ -10,6 +10,36 @@ function runTheGame() {
 		while(playerHealth > 0 && computerHealth > 0){
 			turn++;
 			alert("Turn: " + turn);
+			let whoIsFirst = rollTheDice(2);
+			if(whoIsFirst === 1){
+				alert("You go first this turn.");
+				playerMove = getPlayerMove();
+				if(playerMove === "attack"){				}
+					computerHealth -= playerTurn(computerArmor, playerMove);
+				}else{
+					playerHealth += playerTurn(computerArmor, playerMove);
+				}
+				computerMove = getComputerMove();
+				if(computerMove === "attack"){
+					playerHealth -= computerTurn(playerArmor, computerMove);
+				}else{
+					computerHealth += computerTurn(playerArmor, computerMove);
+				}
+			}else{
+				alert("The computer goes first this turn.");
+				computerMove = getComputerMove();
+				if(computerMove === "attack"){
+					playerHealth -= computerTurn(playerArmor, computerMove);
+				}else{
+					computerHealth += computerTurn(playerArmor, computerMove);
+				}
+				playerMove = getPlayerMove();
+				if(playerMove === "attack"){				}
+					computerHealth -= playerTurn(computerArmor, playerMove);
+				}else{
+					playerHealth += playerTurn(computerArmor, playerMove);
+				}
+			}
 		}
 		displayWinner(playerHealth);
 
@@ -38,7 +68,7 @@ function playerTurn(computerArmor, playerMove) {
 			}
 			let totalDamage = getTotalDamage(baseDamage, elementDamage, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier);
 			alert("Your total damage dealt is " + totalDamage + ".")
-			return Math.sign(-1) * totalDamage;
+			return totalDamage;
 		}else{
 			alert("Your attack missed.");
 			return 0;
@@ -56,8 +86,43 @@ function playerTurn(computerArmor, playerMove) {
 	}
 }
 
-function compterTurn(playerArmor) {
-	// contains all steps of the computers turn
+function compterTurn(playerArmor, computerMove) {
+	alert("The computer chose to " + computerMove + " .");
+	if(computerMove === "attack"){
+		let hitChance = getHitChance(computerMove);
+		if(hitChance){
+			let baseDamage = getBaseDamage(computerMove);
+			alert("The computer's base damage rolled to " + baseDamage + ".");
+			let elementType = getElementType();
+			let elementDamage = getElementDamage();
+			alert("The computer's element rolled to " + elementType + " and it does " + elementDamage + " bonus damage.");
+			let defenseMultiplier = getDefenseMultiplier(computerArmor, elementType);
+			let resistancePenetration = getResistancePenetration();
+			alert("You enemy has an inate " + defenseMultiplier * 100 + "% resistance to the computer's attacks and the computer's armor penetration rolled to " + resistancePenetration * 100 + "%.");
+			let criticalStrikeMultiplier = getCriticalStrikeMultiplier(computerArmor, elementType);
+			if(criticalStrikeMultiplier === 1){
+				alert("The computer did not crit this turn.");
+			}else{
+				alert("The computer crit! Its multiplier is " + criticalStrikeMultiplier + "!")
+			}
+			let totalDamage = getTotalDamage(baseDamage, elementDamage, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier);
+			alert("The total damage dealt is " + totalDamage + ".")
+			return totalDamage;
+		}else{
+			alert("The computer's attack missed.");
+			return 0;
+		}
+	}else {
+		let baseDamage = getBaseDamage(computerMove);
+		let elementType = getElementType();
+		let elementDamage = getElementDamage();
+		if(elementType === "water"){
+			alert("The computer's element rolled to water so its heal is extremely effective!!!");
+		}
+		let totalHealing = getTotalHealing(baseDamage, elementType, elementDamage);
+		alert("The computer heals itself for " + totalHealing + ".");
+		return totalHealing;
+	}
 }
 
 function getDifficulty() {
@@ -304,6 +369,5 @@ function rollTheDice(sidesOfDice) {
 	return Math.floor(Math.random() * sidesOfDice) + 1;
 }
 
-// runTheGame(); 
-
-playerTurn("leather");      
+runTheGame(); 
+   
