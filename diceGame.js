@@ -1,5 +1,4 @@
 function runTheGame() {
-	// runs the actual game
 	do{
 		let turn = 0;
 		let playerHealth = 100;
@@ -7,9 +6,12 @@ function runTheGame() {
 		let playerArmor = getPlayerArmorType();
 		let computerArmor = getComputerArmorType();
 		alert("The computer has " + computerArmor + " armor.")
-		displayHealth(playerHealth, computerHealth);
+		displayHealth(playerHealth, computerHealth, turn);
 
-		while(playerHealth > 0 && computerHealth > 0){
+		// while(playerHealth > 0 && computerHealth > 0){
+
+		let gameIsStillGoing = true;			
+		while(gameIsStillGoing){
 			turn++;
 			alert("Turn: " + turn);
 			let whoIsFirst = rollTheDice(2);
@@ -17,22 +19,23 @@ function runTheGame() {
 				let healthArray = playerFirst(playerHealth, computerHealth, playerArmor, computerArmor, turn);
 				playerHealth = healthArray[0];
 				computerHealth = healthArray[1];
-				if(playerHealth === 0 || computerHealth === 0){
-					break;
-				}
+				gameIsStillGoing = bothPlayerHealthCheck(playerHealth, computerHealth);
 			}else{
 				let healthArray = computerFirst(playerHealth, computerHealth, playerArmor, computerArmor, turn);
 				playerHealth = healthArray[0];
 				computerHealth = healthArray[1];
-				if(playerHealth === 0 || computerHealth === 0){
-					break;
-				}	
+				gameIsStillGoing = bothPlayerHealthCheck(playerHealth, computerHealth);	
 			}
 		}
 		displayWinner(playerHealth);
 
 	} while(playAgain());
 }
+
+function bothPlayerHealthCheck(playerHealth, computerHealth) {
+	return playerHealth > 0 && computerHealth > 0;
+}
+
 function playerTurn(playerHealth, computerHealth, computerArmor) {
 	playerMove = getPlayerMove();
 	if(playerMove === "attack"){
@@ -59,22 +62,14 @@ function playerFirst(playerHealth, computerHealth, playerArmor, computerArmor, t
 	healthArray = playerTurn(playerHealth, computerHealth, computerArmor); 
 	playerHealth = healthArray[0];
 	computerHealth = healthArray[1];
-	if(playerHealth === 0 || computerHealth === 0){
-		return [playerHealth, computerHealth];
-	}
-	console.clear();
-	console.log("Turn: " + turn);
-	displayHealth(playerHealth, computerHealth);
+	displayHealth(playerHealth, computerHealth, turn);
 
-	healthArray = computerTurn(playerHealth, computerHealth, playerArmor);
-	playerHealth = healthArray[0];
-	computerHealth = healthArray[1];
-	if(playerHealth === 0 || computerHealth === 0){
-		return [playerHealth, computerHealth];
+	if (computerHealth > 0) {
+		healthArray = computerTurn(playerHealth, computerHealth, playerArmor);
+		playerHealth = healthArray[0];
+		computerHealth = healthArray[1];
+		displayHealth(playerHealth, computerHealth, turn);
 	}
-	console.clear();
-	console.log("Turn: " + turn);
-	displayHealth(playerHealth, computerHealth);
 	return [playerHealth, computerHealth];
 }
 
@@ -84,27 +79,18 @@ function computerFirst(playerHealth, computerHealth, playerArmor, computerArmor,
 	healthArray = computerTurn(playerHealth, computerHealth, playerArmor);
 	playerHealth = healthArray[0];
 	computerHealth = healthArray[1];
-	if(playerHealth === 0 || computerHealth === 0){
-		return [playerHealth, computerHealth];
+	displayHealth(playerHealth, computerHealth, turn);
+	
+	if(playerHealth > 0) {
+		healthArray = playerTurn(playerHealth, computerHealth, computerArmor);
+		playerHealth = healthArray[0];
+		computerHealth = healthArray[1];
+		displayHealth(playerHealth, computerHealth, turn);
 	}
-	console.clear();
-	console.log("Turn: " + turn);
-	displayHealth(playerHealth, computerHealth);
-
-	healthArray = playerTurn(playerHealth, computerHealth, computerArmor);
-	playerHealth = healthArray[0];
-	computerHealth = healthArray[1];
-	if(playerHealth === 0 || computerHealth === 0){
-		return [playerHealth, computerHealth];
-	}
-	console.clear();
-	console.log("Turn: " + turn);
-	displayHealth(playerHealth, computerHealth);
 	return [playerHealth, computerHealth];
 }
 
 function playerAttack(computerArmor) {
-	// contains all steps of the players turn
 	alert("You chose to attack.");
 	let hitChance = getHitChance(playerMove);
 	if(hitChance){
@@ -364,7 +350,9 @@ function calculateHealth(health, damage) {
 	}
 }
 
-function displayHealth(playerHealth, computerHealth) {
+function displayHealth(playerHealth, computerHealth, turn) {
+	console.clear();
+	console.log("Turn: " + turn);
 	console.log(`You have ${playerHealth} health remaining.`);
 	console.log(`Your opponent has ${computerHealth} health remaining.`);
 }
