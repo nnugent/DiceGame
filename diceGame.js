@@ -1,35 +1,42 @@
 function runTheGame() {
+	let playerWin = 0;
+	let computerWin = 0;
 	do{
 		let turn = 0;
 		let playerHealth = 100;
 		let computerHealth = getComputerHealth(getDifficulty());
 		let playerArmor = getPlayerArmorType();
 		let computerArmor = getComputerArmorType();
-		alert("The computer has " + computerArmor + " armor.")
+		alert("The computer has " + computerArmor + " armor.\n\n")
 		displayHealth(playerHealth, computerHealth, turn);
-
-		// while(playerHealth > 0 && computerHealth > 0){
-
-		let gameIsStillGoing = true;			
+		let gameIsStillGoing = true;
 		while(gameIsStillGoing){
+			let healthArray = [];
 			turn++;
-			alert("Turn: " + turn);
-			let whoIsFirst = rollTheDice(2);
-			if(whoIsFirst === 1){
-				let healthArray = playerFirst(playerHealth, computerHealth, playerArmor, computerArmor, turn);
-				playerHealth = healthArray[0];
-				computerHealth = healthArray[1];
-				gameIsStillGoing = bothPlayerHealthCheck(playerHealth, computerHealth);
+			if(whoIsFirst()){
+				healthArray = playerFirst(playerHealth, computerHealth, playerArmor, computerArmor, turn);
 			}else{
-				let healthArray = computerFirst(playerHealth, computerHealth, playerArmor, computerArmor, turn);
-				playerHealth = healthArray[0];
-				computerHealth = healthArray[1];
-				gameIsStillGoing = bothPlayerHealthCheck(playerHealth, computerHealth);	
+				healthArray = computerFirst(playerHealth, computerHealth, playerArmor, computerArmor, turn);
 			}
+			playerHealth = healthArray[0];
+			computerHealth = healthArray[1];
+			gameIsStillGoing = bothPlayerHealthCheck(playerHealth, computerHealth);	
 		}
-		displayWinner(playerHealth);
-
+		if(displayWinner(playerHealth)){
+			playerWin++;
+		}else{
+			computerWin++;
+		}
+		console.log("Player Wins: " + playerWin + "     Computer Wins:" + computerWin);
 	} while(playAgain());
+}
+
+function whoIsFirst() {
+	if(rollTheDice(2) === 1){
+		return true;
+	}else{
+		return false;
+	}
 }
 
 function bothPlayerHealthCheck(playerHealth, computerHealth) {
@@ -38,7 +45,7 @@ function bothPlayerHealthCheck(playerHealth, computerHealth) {
 
 function playerTurn(playerHealth, computerHealth, computerArmor) {
 	playerMove = getPlayerMove();
-	if(playerMove === "attack"){
+	if(playerMove){
 		computerHealth = calculateHealth(computerHealth, playerAttack(computerArmor));
 	}else{
 		playerHealth = calculateHealth(playerHealth, playerHeal());
@@ -58,7 +65,7 @@ function computerTurn(playerHealth, computerHealth, playerArmor) {
 
 function playerFirst(playerHealth, computerHealth, playerArmor, computerArmor, turn) {
 	let healthArray = [];
-	alert("You go first this turn.");
+	alert("You go first this turn.\n\n");
 	healthArray = playerTurn(playerHealth, computerHealth, computerArmor); 
 	playerHealth = healthArray[0];
 	computerHealth = healthArray[1];
@@ -75,12 +82,12 @@ function playerFirst(playerHealth, computerHealth, playerArmor, computerArmor, t
 
 function computerFirst(playerHealth, computerHealth, playerArmor, computerArmor, turn) {
 	let healthArray = [];
-	alert("The computer goes first this turn.");
+	alert("The computer goes first this turn.\n\n");
 	healthArray = computerTurn(playerHealth, computerHealth, playerArmor);
 	playerHealth = healthArray[0];
 	computerHealth = healthArray[1];
 	displayHealth(playerHealth, computerHealth, turn);
-	
+
 	if(playerHealth > 0) {
 		healthArray = playerTurn(playerHealth, computerHealth, computerArmor);
 		playerHealth = healthArray[0];
@@ -91,7 +98,7 @@ function computerFirst(playerHealth, computerHealth, playerArmor, computerArmor,
 }
 
 function playerAttack(computerArmor) {
-	alert("You chose to attack.");
+	alert("You chose to attack.\n\n");
 	let hitChance = getHitChance(playerMove);
 	if(hitChance){
 		let baseDamage = getBaseDamage(playerMove);
@@ -109,29 +116,29 @@ function playerAttack(computerArmor) {
 			console.log("You crit! Your multiplier is " + criticalStrikeMultiplier + "!")
 		}
 		let totalDamage = getTotalDamage(baseDamage, elementDamage, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier);
-		alert("Your total damage dealt is " + totalDamage + ".")
+		alert("Your total damage dealt is " + totalDamage + ".\n\n")
 		return totalDamage;
 	}else{
-		alert("Your attack missed.");
+		alert("Your attack missed.\n\n");
 		return 0;
 	}
 }
 
 function playerHeal() {
-	alert("You chose to heal.")
+	alert("You chose to heal.\n\n")
 	let baseDamage = getBaseDamage(playerMove);
 	let elementType = getElementType();
 	let elementDamage = getElementDamage();
 	if(elementType === "water"){
-		alert("Your element rolled to water so your heal is extremely effective!!!");
+		alert("Your element rolled to water so your heal is extremely effective!!!\n\n");
 	}
 	let totalHealing = getTotalHealing(baseDamage, elementType, elementDamage);
-	alert("You heal yourself for " + totalHealing + ".");
+	alert("You heal yourself for " + totalHealing + ".\n\n");
 	return Math.sign(-1) * totalHealing;
 }
 
 function computerAttack(playerArmor) {
-	alert("The computer chose to attack.");
+	alert("The computer chose to attack.\n\n");
 	let hitChance = getHitChance(computerMove);
 	if(hitChance){
 		let baseDamage = getBaseDamage(computerMove);
@@ -149,16 +156,16 @@ function computerAttack(playerArmor) {
 			console.log("The computer crit! Its multiplier is " + criticalStrikeMultiplier + "!")
 		}
 		let totalDamage = getTotalDamage(baseDamage, elementDamage, defenseMultiplier, resistancePenetration, criticalStrikeMultiplier);
-		alert("The total damage dealt is " + totalDamage + ".")
+		alert("The total damage dealt is " + totalDamage + ".\n\n")
 		return totalDamage;
 	}else{
-		alert("The computer's attack missed.");
+		alert("The computer's attack missed.\n\n");
 		return 0;
 	}
 }
 
 function computerHeal() {
-	alert("The computer chose to heal.");
+	alert("The computer chose to heal.\n\n");
 	let baseDamage = getBaseDamage(computerMove);
 	let elementType = getElementType();
 	let elementDamage = getElementDamage();
@@ -166,35 +173,23 @@ function computerHeal() {
 		console.log("The computer's element rolled to water so its heal is extremely effective!!!");
 	}
 	let totalHealing = getTotalHealing(baseDamage, elementType, elementDamage);
-	alert("The computer heals itself for " + totalHealing + ".");
+	alert("The computer heals itself for " + totalHealing + ".\n\n");
 	return Math.sign(-1) * totalHealing;
 }
 
 function getDifficulty() {
 	let invalidInput = true;
-	let difficulty;
-	while(invalidInput){
-		difficulty = prompt("Would you like to play on normal or increase the difficulty by a random amount? (normal/random)").toLowerCase();
-		try{
-			if (difficulty === "") throw "No input detected, please answer either normal or random.";
-			if (!(difficulty === "normal") && !(difficulty === "random")){
-				throw "Invalid input, please answer normal or random.";
-			}
-			invalidInput = false;
-		}catch(err){
-			alert(err);
-		}
-	}
+	let difficulty = confirm("Would you like to increase your difficulty?\n\nPress OK to increase your difficulty or CANCEL to continue.");
 	return difficulty;
 }
 
 function getComputerHealth(difficulty) {
-	if(difficulty === "normal"){
+	if(!difficulty){
 		return 100;
 	} else {
 		let roll = rollTheDice(20);
 		let difficultyScaling = roll * 5;
-		alert("Your difficulty was increased by " + difficultyScaling + "%.");
+		alert("Your difficulty was increased by " + difficultyScaling + "%.\n\n");
 		return difficultyScaling + 100;
 	}
 }
@@ -215,21 +210,11 @@ function getHitChance(ability) {
 }
 
 function getPlayerArmorType() {
-	let invalidInput = true;
-	let armorType;
-	while(invalidInput){
-		armorType = prompt("Do you prefer leather or plate armor?").toLowerCase();
-		try{
-			if (armorType === "") throw "No input detected, please answer either leather or plate.";
-			if (!(armorType === "leather") && !(armorType === "plate")){
-				throw "Invalid input, please answer leather or plate.";
-			}
-			invalidInput = false;
-		}catch(err){
-			alert(err);
-		}
+	armorType = confirm("Do you prefer Plate or Leather armor? \n\nPress OK for Plate armor or CANCEL for Leather armor");
+	if (armorType){
+		return 'leather';
 	}
-	return armorType;
+	return 'plate';
 }
 
 function getComputerArmorType() {
@@ -334,7 +319,7 @@ function calculateHealth(health, damage) {
 		if (roll <= 4){
 			return 0;
 		} else {
-			alert("Resisted Death.")
+			alert("Resisted Death.\n\n")
 			return 1;
 		}
 	}else if(previousHealth > 1 && health <1){
@@ -342,7 +327,7 @@ function calculateHealth(health, damage) {
 		if (roll <= 2){
 			return 0;
 		} else {
-			alert("Resisted Death.")
+			alert("Resisted Death.\n\n")
 			return 1;
 		}
 	}else{
@@ -366,55 +351,24 @@ function getComputerMove(computerHealth) {
 }
 
 function getPlayerMove() {
-	let invalidInput = true;
-	let move;
-	while(invalidInput){
-		move = prompt("Would you like to heal or attack?").toLowerCase();
-		try{
-			if (move === "") throw "No input detected, please answer heal or attack.";
-			if (!(move === "attack") && !(move === "heal")){
-				throw "Invalid input, please answer heal or attack.";
-			}
-			invalidInput = false;
-		}catch(err){
-			alert(err);
-		}
-	}
-	return move;
+	move = confirm("Would you like to heal? \n\n Press OK to heal and CANCEL to attack.");
+	return !(move);
 }
 
 function displayWinner(playerHealth) {
 	if (playerHealth > 0){
-		alert("Congradulations!!! Your honor & reputation remains intact!!!");
+		alert("Congradulations!!! Your honor & reputation remains intact!!!\n\n");
+		return true;
 	} else{
-		alert("To your upmost disgrace you have been defeated!!!")
+		alert("To your upmost disgrace you have been defeated!!!\n\n")
+		return false;
 	}
 }
 
 function playAgain() {
-	let invalidInput = true;
-	let again;
-	while(invalidInput){
-		again = prompt("Would you like to play again? (yes or no)").toLowerCase();
-		try{
-			if (again === "") throw "No input detected, please answer yes or no.";
-			if (!(again === "yes") && !(again === "no")){
-				throw "Invalid input, please answer yes or no.";
-			}
-			invalidInput = false;
-		}catch(err){
-			alert(err);
-		}
-	}
-	if (again === "yes"){
-		return true;
-	} else if (again === "no"){
-		return false;
-	}
+	return confirm("Press OK to play again.");
 }
 
 function rollTheDice(sidesOfDice) {
 	return Math.floor(Math.random() * sidesOfDice) + 1;
 }
-
-runTheGame(); 
